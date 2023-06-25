@@ -1,0 +1,11 @@
+.DS_Store
+node_modules/
+.venv/
+.env
+broadcast/
+out/
+.vercel
+.idea
+cache/
+lcov*
+*.DS_Store
