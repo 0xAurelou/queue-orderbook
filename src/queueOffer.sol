@@ -57,7 +57,7 @@ library Queue {
     }
 
     struct Offer {
-        uint creatorId;
+        uint offerId;
         address token;
         uint256 amount;
         uint256 timestamp;
