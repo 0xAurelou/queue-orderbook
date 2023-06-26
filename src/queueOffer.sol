@@ -1,4 +1,3 @@
-
 // SPDX-License-Identifier: MIT
 // Inspired by OpenZeppelin Contracts (last updated v4.6.0) (utils/structs/DoubleEndedQueue.sol)
 
@@ -33,7 +32,6 @@ library Queue {
      */
     error OutOfBounds();
 
-
     event OfferCreated(Offer offer);
     event OfferTaken(Offer offer);
     event OfferModified(Offer offer);
@@ -50,14 +48,14 @@ library Queue {
      * Indices are in the range [begin, end) which means the first item is at data[begin] and the last item is at
      * data[end - 1].
      */
-    struct OfferQueue{
+    struct OfferQueue {
         uint128 _begin;
         uint128 _end;
         mapping(uint128 => Offer) _value;
     }
 
     struct Offer {
-        uint offerId;
+        uint256 offerId;
         address token;
         uint256 amount;
         uint256 timestamp;
@@ -65,9 +63,12 @@ library Queue {
     }
 
     // This function will be used to check if the order is take partially or not. If yes we delete we don't delete the order just update the amount
-    function takeQueueOffer(OfferQueue storage queue, uint128 index,uint256 amount) internal returns (Offer memory value, uint256 remaining) {
+    function takeQueueOffer(OfferQueue storage queue, uint256 amount)
+        internal
+        returns (Offer memory value, uint256 remaining)
+    {
         if (isEmpty(queue)) revert Empty();
-        if (index >= queue._end) revert OutOfBounds();
+        uint128 index = uint128(front(queue).offerId);
         value = queue._value[index];
         remaining = 0;
         if (value.amount > amount) {
@@ -87,7 +88,7 @@ library Queue {
     /**
      * @dev Inserts an item at the end of the queue.
      */
-    function createQueueOffer(OfferQueue storage queue, Offer memory offer ) internal {
+    function createQueueOffer(OfferQueue storage queue, Offer memory offer) internal {
         uint128 backIndex = queue._end;
         queue._value[backIndex] = offer;
         unchecked {
@@ -96,7 +97,6 @@ library Queue {
         emit OfferCreated(offer);
     }
 
-    
     /**
      * @dev Returns the item at the beginning of the queue.
      *
@@ -173,7 +173,7 @@ library Queue {
     function getQueue(OfferQueue storage queue) public view returns (Offer[] memory) {
         uint256 len = length(queue);
         Offer[] memory offers = new Offer[](len);
-        for (uint256 i = 0; i < len; ) {
+        for (uint256 i = 0; i < len;) {
             offers[i] = at(queue, i);
             unchecked {
                 i++;
@@ -182,4 +182,3 @@ library Queue {
         return offers;
     }
 }
-
